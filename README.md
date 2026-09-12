@@ -81,7 +81,7 @@ powershell -File "$HOME\.agents\skills\working-with-pptx\scripts\run-pptx-node.p
 
 - Hackathon repository (team Quantum Headache, QUBIT 2026): https://github.com/zuwasi/quantum-headache-antenna-tilt
 - 5-minute demo video: https://youtu.be/OSEtTWnRQhc
-- Classiq library demo PR: see `notebook/` and the link in the Releases/PR section once merged
+- Classiq library contribution: issue https://github.com/Classiq/classiq-library/issues/1735, pull request https://github.com/Classiq/classiq-library/pull/1736
 
 ## Data attribution
 

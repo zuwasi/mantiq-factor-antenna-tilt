@@ -313,7 +313,7 @@ const tblCell = { color: C.ink, fill: { color: C.panel }, fontFace: FONT, fontSi
     [{ text: 'minimum cost', options: tblCell }, { text: '-2.8440 (theorem)', options: tblCell }, { text: '-2.8440', options: tblCell }, { text: '-2.8440 (best sample)', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
     [{ text: 'argmin', options: tblCell }, { text: '(0,3,0,0,0,0), unique', options: tblCell }, { text: '(0,3,0,0,0,0)', options: tblCell }, { text: '(0,3,0,0,0,0)', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
     [{ text: 'encoding valid', options: tblCell }, { text: 'bijection', options: tblCell }, { text: '4096 states, all decode', options: tblCell }, { text: 'all samples decode', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
-    [{ text: '<Cost> p=1 at hot start', options: tblCell }, { text: '', options: tblCell }, { text: '1.9985', options: tblCell }, { text: '2.06 (run 1), 1.99 (after COBYLA)', options: tblCell }, { text: 'shot noise', options: { ...tblCell, color: C.cyan } }],
+    [{ text: '<Cost> p=1 at hot start', options: tblCell }, { text: '', options: tblCell }, { text: '1.9985 (Qiskit statevector of the exported QASM: 1.9985)', options: tblCell }, { text: '2.02 to 2.06 (4096 shots), 1.99 after COBYLA', options: tblCell }, { text: 'shot noise', options: { ...tblCell, color: C.cyan } }],
     [{ text: 'P(cost < 0) p=1', options: tblCell }, { text: '', options: tblCell }, { text: '0.53', options: tblCell }, { text: '0.525', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
     [{ text: 'P(optimum) p=1', options: tblCell }, { text: '', options: tblCell }, { text: '0.0066 (27x)', options: tblCell }, { text: '0.0066 to 0.0071 (27x to 29x)', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
     [{ text: '<Cost> p=2', options: tblCell }, { text: '', options: tblCell }, { text: '-0.3825', options: tblCell }, { text: '-0.39', options: tblCell }, { text: 'yes', options: { ...tblCell, color: C.green, bold: true } }],
@@ -321,7 +321,7 @@ const tblCell = { color: C.ink, fill: { color: C.panel }, fontFace: FONT, fontSi
   ], { x: 0.6, y: 1.6, w: 12.2, colW: [2.7, 2.4, 2.4, 3.3, 1.4], rowH: 0.46, border: { type: 'solid', color: C.bg, pt: 1 } });
   bullets(s, [
     'The value of MantiQ Factor is this table: no number in the demo rests on a single tool',
-    'COBYLA on the simulator did not beat the Wolfram angles in 8 iterations, which is the expected outcome when the hot start is already the exact optimum of the landscape',
+    'Blind COBYLA starts on Classiq (hackathon runs): start (0.20, 0.50) stuck at <Cost> 35.5, start (0.02, 0.60) reached only 7.0 after 20 jobs. From the Wolfram angles: 2.0 in the first job, and 8 more iterations found nothing better',
   ], { x: 0.6, y: 5.85, w: 12.3, h: 0.9, fontSize: 13.5 });
   s.addNotes('If any row disagreed, the pipeline would tell you which stage to reopen: a proof failure means the model, a Wolfram mismatch means the Hamiltonian, a Classiq mismatch means the circuit.');
 }
@@ -329,16 +329,19 @@ const tblCell = { color: C.ink, fill: { color: C.panel }, fontFace: FONT, fontSi
 // ---------- 13. Scaling ----------
 {
   const s = base('Where this leaf sits: k-means hierarchy and the road to 1000 qubits', 'Scaling');
-  s.addImage({ path: img('charts/group_benchmark_bars.png'), x: 0.6, y: 1.55, w: 6.0, h: 2.97 });
-  caption(s, 'Team benchmark on the 48-region toy network: one plan for all 1.379 (1 call), k-means hierarchy + QAOA 1.547 (10 calls), one job per region 1.838 (48 calls).', 0.6, 4.55, 6.1);
+  stat(s, 0.6, 1.5, 3.95, '10^301', 'plans for 500 antennas x 4 tilts (today: 4096)', C.gold);
+  stat(s, 4.7, 1.5, 3.95, 'about 45 qubits', 'ceiling of exact statevector simulation (50 q = 18 PB)', C.gold);
+  stat(s, 8.8, 1.5, 4.1, 'about 13,000 CX', 'one QAOA layer at 1000 qubits, still 2-local', C.gold);
+  s.addImage({ path: img('charts/group_benchmark_depth.png'), x: 0.6, y: 3.05, w: 4.9, h: 2.82 });
+  caption(s, 'Team benchmark, 48-region toy network: refinement 5 -> 21 groups. Cycle 3 (13 groups, 13 QAOA jobs) reaches 1.75 = 95% of the per-region ceiling 1.838 (48 jobs); one plan for all gives 1.379.', 0.6, 5.95, 5.4);
   bullets(s, [
-    'Network -> 5 groups -> 25 -> 125: k-means on region feature vectors, one QAOA job per group, recursive refinement where the utility gain is worth it',
-    'Our 12-qubit problem is one job in that tree; 2 qubits per antenna means a group of n antennas needs 2n qubits, still 2-local',
-    'At 500 antennas (1000 qubits): 4^500 plans, exact enumeration and statevector simulation are impossible; the best classical tools are heuristics (simulated annealing, tabu, QUBO solvers) with no optimality certificate',
-    'On a 1000-qubit gate-based machine the same Qmod compiles unchanged; QAOA depth grows linearly in the number of interfering pairs, not in the number of plans',
-    'What carries over from the small case: the encoding proof, the 2-locality, and the hot-start habit (train angles on a small exact instance, transfer to the large one)',
-  ], { x: 6.9, y: 1.55, w: 6.0, h: 5.0, fontSize: 13 });
-  s.addNotes('This slide keeps the team contribution visible: the hierarchy is theirs, the verified leaf is ours, and they compose.');
+    'Network -> 5 groups -> 25 -> 125: k-means on region feature vectors, one QAOA job per group, refine where the utility gain is worth it. Our 12-qubit problem is one job in that tree',
+    'Best non-quantum tools at 1000 qubits: brute force 10^283 s at exascale; exact QUBO solvers run hours to days without certifying; annealing and tabu give a good plan in minutes with no guarantee (1.833 vs 1.838 on the toy benchmark). Nobody can simulate QAOA past about 48 qubits',
+    'A real 1000-qubit gate-based machine: physical qubits exist (IBM Condor 1121, Atom Computing 1200), but 13,000 CX at 99.9% fidelity means about 13 errors per shot, so the run must be error-corrected (2,000 to 100,000 physical qubits; roadmaps 2028 to 2030)',
+    'Once available: depth ~10^2 per layer, 10^4 shots x 20 iterations = seconds to minutes; the Wolfram hot start cuts the iterations. Same Qmod, Classiq synthesizes for the target; only the backend changes',
+    'What carries over unchanged: the encoding proof, the 2-locality, the hot-start habit (train angles on a small exact instance, transfer to the large one)',
+  ], { x: 6.2, y: 3.05, w: 6.7, h: 3.5, fontSize: 12 });
+  s.addNotes('This slide keeps the team contribution visible: the hierarchy is theirs, the verified leaf is ours, and they compose. The 1000-qubit numbers come from the hackathon deck (slide 13 there).');
 }
 
 // ---------- 14. Deliverables ----------
@@ -370,7 +373,7 @@ const tblCell = { color: C.ink, fill: { color: C.panel }, fontFace: FONT, fontSi
       { text: body, options: { color: C.ink, fontSize: 12.5 } },
     ], { x: x + 0.12, y, w: 5.7, h: 1.5, fontFace: FONT, valign: 'middle', margin: 0.03 });
   };
-  lesson(0.6, 1.6, 'Compute before you engineer', 'Wolfram found the angles exactly; the Classiq run confirmed them in one shot and COBYLA had nothing left to do. No blind parameter search on a paid simulator.');
+  lesson(0.6, 1.6, 'Compute before you engineer', 'Wolfram found the angles exactly; the Classiq run confirmed them in one shot and COBYLA had nothing left to do. Blind starts on the simulator got stuck at 35.5 or reached only 7.0 after 20 jobs: shot noise hides the gradient.');
   lesson(6.9, 1.6, 'Prove the parts that fail silently', 'Encoding bijection, the true optimum, and the diagonal phase layer are where a QAOA demo can be wrong while still producing plausible histograms.');
   lesson(0.6, 3.3, 'Make the model decision explicit', 'The 2-qubit vs 5-qubit choice was argued with numbers (invalid mass, Pauli weight, team gain) and written down before code, so the team could veto it.');
   lesson(6.9, 3.3, 'Files between stages, not memory', 'JSON angles, Markdown Hamiltonian, Lean source and Qmod are the interfaces. Any stage can be rerun alone, and this deck was rebuilt from them.');

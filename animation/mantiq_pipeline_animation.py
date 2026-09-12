@@ -38,14 +38,19 @@ STAGES = [
     ("6", "ENGINEER", "Synthesize &\nGenerate", "#6f7bff"),
     ("7", "OUTPUT", "Executable\nSystems", "#2fd4c4"),
 ]
+# (name, subtitle, logo file in assets/logos or None -> text label)
 TOOLS = [
-    ("Amp", "AI reasoning &\norchestration"),
-    ("Wolfram Mathematica", "computation &\nsymbolic intelligence"),
-    ("Lean 4", "formal verification\n& proof"),
-    ("Converters", "PDF, DOCX, LaTeX,\nMarkdown"),
-    ("Skills", "domain expertise\n& agent skills"),
-    ("Knowledge bases", "curated data\n& ontologies"),
+    ("Amp", "AI reasoning &\norchestration", "amp.png"),
+    ("Wolfram Mathematica", "computation &\nsymbolic intelligence", "wolfram.png"),
+    ("Lean 4", "formal verification\n& proof", "lean.png"),
+    ("Classiq", "quantum synthesis\n& execution", "classiq.png"),
+    ("Converters", "PDF, DOCX, LaTeX,\nMarkdown", None),
+    ("Skills", "domain expertise\n& agent skills", None),
+    ("Knowledge bases", "curated data\n& ontologies", None),
 ]
+LOGOS = HERE / "assets" / "logos"
+# vendor logo shown inside each stage card (which tool did the work at that stage)
+STAGE_LOGOS = ["amp.png", "amp.png", "amp.png", "wolfram.png", "lean.png", "classiq.png", "classiq.png"]
 # what each stage did in THIS project: (headline, bullet lines, thumbnail file or None)
 DETAILS = [
     ("Hackathon brief + team write-ups",
@@ -109,6 +114,32 @@ def ease(x):
     return x * x * (3 - 2 * x)
 
 
+_logo_cache = {}
+
+
+def draw_logo(ax, name, x, y, h, w_max, zorder=3, alpha=1.0, align="left"):
+    """Draw assets/logos/<name> on a white rounded chip of height h, vertically centred on y.
+    x is the chip's left edge (align="left") or centre (align="center"). The image keeps its
+    aspect ratio and the chip width is capped at w_max. Returns (chip, image) artists."""
+    if name not in _logo_cache:
+        _logo_cache[name] = mpimg.imread(LOGOS / name)
+    img = _logo_cache[name]
+    pad = 0.12 * h
+    ih = h - 2 * pad
+    iw = ih * img.shape[1] / img.shape[0]
+    if iw > w_max - 2 * pad:
+        iw = w_max - 2 * pad
+        ih = iw * img.shape[0] / img.shape[1]
+    cw = iw + 2 * pad
+    if align == "center":
+        x -= cw / 2
+    chip = FancyBboxPatch((x, y - h / 2), cw, h, boxstyle="round,pad=0.02", fc="white", ec="none", zorder=zorder, alpha=alpha)
+    ax.add_patch(chip)
+    im = ax.imshow(img, extent=[x + pad, x + pad + iw, y - ih / 2, y + ih / 2], aspect="auto",
+                   interpolation="lanczos", zorder=zorder + 1, alpha=alpha)
+    return chip, im
+
+
 # ------------------------------------------------------------------ static scene
 def build_scene(ax):
     ax.set_xlim(0, W)
@@ -124,10 +155,15 @@ def build_scene(ax):
     ax.plot([0.55, 15.45], [7.55, 7.55], color=GOLD, lw=1, alpha=0.6)
     # tools bar
     ax.add_patch(FancyBboxPatch((0.55, 6.55), 14.9, 0.85, boxstyle="round,pad=0.02", fc=PANEL, ec="#243055", lw=1.2, zorder=1))
-    xs = [0.75, 3.2, 5.75, 8.05, 10.55, 12.95]
-    for (name, sub), x in zip(TOOLS, xs):
-        ax.text(x, 7.2, name, fontsize=12, color=WHITE, weight="bold", va="center")
-        ax.text(x, 6.83, sub, fontsize=8.5, color=GREY, va="center", linespacing=1.1)
+    xs = [0.75, 2.75, 5.05, 7.2, 9.55, 11.55, 13.45]
+    for (name, sub, logo), x in zip(TOOLS, xs):
+        if logo:
+            chip, _ = draw_logo(ax, logo, x, 7.17, 0.42, 1.9)
+            if chip.get_width() < 0.8:  # square mark (Amp): add the name next to it
+                ax.text(x + chip.get_width() + 0.1, 7.17, name, fontsize=12, color=WHITE, weight="bold", va="center")
+        else:
+            ax.text(x, 7.2, name, fontsize=12, color=WHITE, weight="bold", va="center")
+        ax.text(x, 6.8, sub, fontsize=8.5, color=GREY, va="center", linespacing=1.1)
     # footer: three pillars
     ax.add_patch(FancyBboxPatch((0.55, 0.95), 14.9, 0.95, boxstyle="round,pad=0.02", fc=PANEL, ec="#243055", lw=1.2, zorder=1))
     pillars = [("Intelligent orchestration", "Amp agents coordinate the pipeline, pick tools,\nkeep context across steps"),
@@ -155,7 +191,7 @@ class Scene:
         # stage boxes
         self.box_w, self.gap, self.box_y, self.box_h = 1.85, 0.32, 3.75, 2.4
         self.x0 = (W - (7 * self.box_w + 6 * self.gap)) / 2
-        self.boxes, self.circles, self.titles, self.subs, self.arrows = [], [], [], [], []
+        self.boxes, self.circles, self.titles, self.subs, self.arrows, self.logos = [], [], [], [], [], []
         for i, (num, title, sub, col) in enumerate(STAGES):
             x = self.x0 + i * (self.box_w + self.gap)
             b = FancyBboxPatch((x, self.box_y), self.box_w, self.box_h, boxstyle="round,pad=0.02",
@@ -165,8 +201,11 @@ class Scene:
             self.ax.add_patch(c)
             self.ax.text(x + self.box_w / 2, self.box_y + self.box_h + 0.02, num, ha="center", va="center", fontsize=15, color=WHITE, weight="bold", zorder=5)
             t = self.ax.text(x + self.box_w / 2, self.box_y + self.box_h - 0.45, title, ha="center", va="center", fontsize=12.5, color=WHITE, weight="bold", alpha=0.55, zorder=3)
-            s = self.ax.text(x + self.box_w / 2, self.box_y + 0.55, sub, ha="center", va="center", fontsize=10, color=GREY, alpha=0.55, zorder=3, linespacing=1.15)
+            s = self.ax.text(x + self.box_w / 2, self.box_y + 0.5, sub, ha="center", va="center", fontsize=10, color=GREY, alpha=0.55, zorder=3, linespacing=1.15)
             self.ax.plot([x + 0.55, x + self.box_w - 0.55], [self.box_y + 0.2, self.box_y + 0.2], color=col, lw=2.5, alpha=0.5)
+            # vendor logo, centred in the card below the token path and above the subtitle
+            self.logos.append(draw_logo(self.ax, STAGE_LOGOS[i], x + self.box_w / 2, self.box_y + 0.95, 0.42, self.box_w - 0.4,
+                                        zorder=3, alpha=0.35, align="center"))
             self.boxes.append(b); self.circles.append(c); self.titles.append(t); self.subs.append(s)
             if i < 6:
                 a = FancyArrow(x + self.box_w + 0.05, self.box_y + self.box_h / 2 + 0.3, 0.18, 0, width=0.12, head_width=0.3, head_length=0.1, color="#3a4670", zorder=3)
@@ -201,6 +240,8 @@ class Scene:
         self.circles[i].set_alpha(0.55 + 0.45 * a)
         self.titles[i].set_alpha(0.55 + 0.45 * a)
         self.subs[i].set_alpha(0.55 + 0.45 * a)
+        for art in self.logos[i]:
+            art.set_alpha(0.35 + 0.65 * a)
 
     def show_detail(self, i, prog):
         head, lines, thumb = DETAILS[i]

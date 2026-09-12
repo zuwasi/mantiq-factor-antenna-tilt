@@ -1,0 +1,4 @@
+__pycache__/
+.lake/
+.ipynb_checkpoints/
+Thumbs.db

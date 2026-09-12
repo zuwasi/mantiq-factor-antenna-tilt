@@ -1,0 +1,45 @@
+instance: 6 antennas, 12 qubits, 4096 configurations
+classical optimum: cost -2.8440 at tilts [0, 3, 0, 0, 0, 0]
+start angles (user): [0.2, 0.5]
+  Wolfram prediction: <C> = 1.9985, P(opt) = 0.0066
+synthesis OK (6.3 s)
+circuit: {'width': 12, 'depth': 59} gates: {'cx': 92, 'rz': 72, 'h': 12, 'rx': 12}
+
+sampled at warm start (7.1 s): <C> = 35.5647, P(cost<0) = 0.128, P(opt) = 0.0010, best sampled [0, 3, 0, 0, 0, 0] cost -2.8440
+  iter   1: <C> = 35.9969  P(opt) = 0.0020
+  iter   2: <C> = 34.4498  P(opt) = 0.0005
+  iter   3: <C> = 34.9726  P(opt) = 0.0005
+  iter   4: <C> = 36.8208  P(opt) = 0.0010
+  iter   5: <C> = 34.6721  P(opt) = 0.0007
+  iter   6: <C> = 34.9819  P(opt) = 0.0000
+  iter   7: <C> = 34.6150  P(opt) = 0.0010
+  iter   8: <C> = 34.3263  P(opt) = 0.0000
+  iter   9: <C> = 34.5365  P(opt) = 0.0010
+  iter  10: <C> = 34.2018  P(opt) = 0.0007
+  iter  11: <C> = 34.0843  P(opt) = 0.0022
+  iter  12: <C> = 34.3939  P(opt) = 0.0020
+  iter  13: <C> = 34.8369  P(opt) = 0.0002
+  iter  14: <C> = 34.4835  P(opt) = 0.0005
+  iter  15: <C> = 34.4621  P(opt) = 0.0017
+  iter  16: <C> = 34.5798  P(opt) = 0.0005
+  iter  17: <C> = 34.6047  P(opt) = 0.0010
+  iter  18: <C> = 34.3307  P(opt) = 0.0007
+  iter  19: <C> = 34.8083  P(opt) = 0.0007
+  iter  20: <C> = 34.5745  P(opt) = 0.0007
+  iter  21: <C> = 34.7980  P(opt) = 0.0005
+  iter  22: <C> = 35.0846  P(opt) = 0.0000
+after 25 COBYLA iterations: <C> = 33.7868, P(opt) = 0.0012, params [0.2414, 0.49002]
+
+top 10 sampled configurations:
+  tilts=[0, 0, 0, 2, 2, 2]  shots=   24  cost= 27.0000
+  tilts=[2, 2, 2, 0, 0, 0]  shots=   20  cost= 26.8140
+  tilts=[0, 1, 0, 0, 0, 1]  shots=   17  cost= -1.4778
+  tilts=[2, 2, 2, 0, 1, 0]  shots=   16  cost= 28.0736
+  tilts=[0, 0, 0, 1, 0, 0]  shots=   16  cost= -0.9000
+  tilts=[2, 2, 2, 2, 2, 2]  shots=   15  cost= 66.7716
+  tilts=[0, 0, 0, 0, 0, 0]  shots=   15  cost=  0.0000
+  tilts=[1, 0, 0, 1, 0, 0]  shots=   15  cost= -1.4611
+  tilts=[2, 0, 0, 0, 0, 0]  shots=   15  cost= -1.8450
+  tilts=[0, 0, 1, 2, 2, 2]  shots=   14  cost= 28.1667
+
+written: C:\Projects\Hackton\group\classiq\results\qaoa_tilt_p1_classiq_simulator_converge.json

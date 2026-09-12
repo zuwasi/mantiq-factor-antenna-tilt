@@ -1,0 +1,53 @@
+HTTP GET /api/v22/execution/jobs/70d66d9f-25e4-4ac1-ba52-986894a5c7e4 failed
+Traceback (most recent call last):
+  File "C:\Python312\Lib\site-packages\classiq\_internals\client.py", line 264, in _request_attempt
+    self.handle_response(response)
+  File "C:\Python312\Lib\site-packages\classiq\_internals\client.py", line 139, in handle_response
+    self._handle_error(response)
+  File "C:\Python312\Lib\site-packages\classiq\_internals\client.py", line 162, in _handle_error
+    raise ClassiqAPIError(message, response.status_code)
+classiq.interface.exceptions.ClassiqAPIError: Call to API failed with code 502
+If you need further assistance, please reach out on our Community Slack channel at: https://short.classiq.io/join-slack or open a support ticket at: https://classiq-community.freshdesk.com/support/tickets/new
+instance: 6 antennas, 12 qubits, 4096 configurations
+classical optimum: cost -2.8440 at tilts [0, 3, 0, 0, 0, 0]
+start angles (user): [0.02, 0.6]
+  Wolfram prediction: <C> = 1.9985, P(opt) = 0.0066
+synthesis OK (7.1 s)
+circuit: {'width': 12, 'depth': 59} gates: {'cx': 92, 'rz': 72, 'h': 12, 'rx': 12}
+
+sampled at warm start (6.7 s): <C> = 21.6367, P(cost<0) = 0.052, P(opt) = 0.0002, best sampled [0, 3, 0, 0, 0, 0] cost -2.8440
+  iter   1: <C> = 22.2395  P(opt) = 0.0002
+  iter   2: <C> = 8.1593  P(opt) = 0.0012
+  iter   3: <C> = 6.8124  P(opt) = 0.0037
+  iter   4: <C> = 17.2973  P(opt) = 0.0039
+  iter   5: <C> = 9.7277  P(opt) = 0.0012
+  iter   6: <C> = 7.7812  P(opt) = 0.0017
+  iter   7: <C> = 6.9073  P(opt) = 0.0044
+  iter   8: <C> = 7.3153  P(opt) = 0.0012
+  iter   9: <C> = 7.2311  P(opt) = 0.0022
+  iter  10: <C> = 6.8367  P(opt) = 0.0024
+  iter  11: <C> = 7.0203  P(opt) = 0.0012
+  iter  12: <C> = 7.0577  P(opt) = 0.0012
+  iter  13: <C> = 6.9705  P(opt) = 0.0022
+  iter  14: <C> = 6.7133  P(opt) = 0.0017
+  iter  15: <C> = 6.8058  P(opt) = 0.0029
+  iter  16: <C> = 6.9349  P(opt) = 0.0020
+  iter  17: <C> = 7.0161  P(opt) = 0.0042
+  iter  18: <C> = 7.1762  P(opt) = 0.0022
+  iter  19: <C> = 7.0097  P(opt) = 0.0037
+  iter  20: <C> = 7.3458  P(opt) = 0.0034
+after 20 COBYLA iterations: <C> = 7.0882, P(opt) = 0.0029, params [0.07011, 0.64966]
+
+top 10 sampled configurations:
+  tilts=[0, 1, 0, 0, 2, 0]  shots=   18  cost= -2.0076
+  tilts=[0, 0, 2, 2, 0, 0]  shots=   17  cost= -2.2522
+  tilts=[1, 2, 0, 0, 0, 1]  shots=   16  cost=  2.7833
+  tilts=[0, 0, 0, 2, 0, 0]  shots=   16  cost= -1.8000
+  tilts=[0, 0, 1, 1, 0, 0]  shots=   15  cost= -1.4743
+  tilts=[0, 1, 0, 0, 1, 0]  shots=   15  cost= -1.4778
+  tilts=[1, 0, 0, 2, 0, 0]  shots=   15  cost= -1.9997
+  tilts=[1, 0, 0, 0, 2, 0]  shots=   15  cost= -1.9997
+  tilts=[1, 0, 0, 0, 3, 0]  shots=   14  cost= -2.5383
+  tilts=[0, 2, 0, 0, 0, 1]  shots=   14  cost= -2.0556
+
+written: C:\Projects\Hackton\group\classiq\results\qaoa_tilt_p1_classiq_simulator_converge2.json

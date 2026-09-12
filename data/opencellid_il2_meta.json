@@ -1,0 +1,30 @@
+{
+  "challenge": "antenna tilt optimization (official spec)",
+  "source": "OpenCelliD country export (CC BY-SA 4.0)",
+  "license": "see DATA_SOURCES.md",
+  "bbox_lat_min": 32.0,
+  "bbox_lon_min": 34.7,
+  "bbox_lat_max": 32.15,
+  "bbox_lon_max": 34.9,
+  "tilt_levels": 10,
+  "sites": 2,
+  "antennas": 6,
+  "qubits_coarse_2q": 12,
+  "assumptions": {
+    "I_MAX": 1.35,
+    "D0_m": 1000.0,
+    "coverage_model": "0.8+0.4*(1-exp(-d_nn/1000.0))"
+  },
+  "site_coords": [
+    {
+      "site_id": 0,
+      "lat": 32.0735,
+      "lon": 34.7904
+    },
+    {
+      "site_id": 1,
+      "lat": 32.087,
+      "lon": 34.8046
+    }
+  ]
+}
